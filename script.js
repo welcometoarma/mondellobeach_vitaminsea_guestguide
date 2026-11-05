@@ -1,46 +1,41 @@
 document.addEventListener('DOMContentLoaded', function () {
   
-  // --- 1. MOBILE MENU LOGIC ---
+  // --- 1. MOBILE MENU (Robust Mobile-First Logic) ---
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
 
-  // Function to close the menu
-  function closeMenu() {
-    if (navLinks) navLinks.classList.remove('open');
-    if (hamburger) {
-      const icon = hamburger.querySelector('i');
-      if (icon) {
-        icon.classList.add('fa-bars');
-        icon.classList.remove('fa-times');
-      }
+  function toggleMenu(forceClose = false) {
+    if (!navLinks || !hamburger) return;
+
+    if (forceClose) {
+      navLinks.classList.remove('open');
+      hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+      return;
     }
+
+    const isOpen = navLinks.classList.toggle('open');
+    hamburger.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
   }
 
   if (hamburger && navLinks) {
-    // Open/Close when clicking the hamburger
-    hamburger.addEventListener('click', function (e) {
+    // Toggle on hamburger click
+    hamburger.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      
-      if (navLinks.classList.contains('open')) {
-        closeMenu();
-      } else {
-        navLinks.classList.add('open');
-        const icon = hamburger.querySelector('i');
-        if (icon) {
-          icon.classList.remove('fa-bars');
-          icon.classList.add('fa-times');
-        }
+      toggleMenu();
+    });
+
+    // Close IMMEDIATELY when any link is tapped
+    navLinks.addEventListener('click', function(e) {
+      if (e.target.closest('a')) {
+        toggleMenu(true);
       }
     });
 
-    // GLOBAL FIX: Close menu whenever ANY link inside the menu is clicked
-    document.addEventListener('click', function (e) {
-      // If the clicked element is a nav-link or inside one
-      const clickedLink = e.target.closest('.nav-link');
-      
-      if (clickedLink && navLinks.classList.contains('open')) {
-        closeMenu(); // Force close it
+    // Close if user taps anywhere outside the menu
+    document.addEventListener('click', function(e) {
+      if (navLinks.classList.contains('open') && !e.target.closest('.sticky-nav')) {
+        toggleMenu(true);
       }
     });
   }
@@ -88,11 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const scrollTopBtn = document.getElementById('scrollTop');
   if (scrollTopBtn) {
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 400) {
-        scrollTopBtn.style.display = 'flex';
-      } else {
-        scrollTopBtn.style.display = 'none';
-      }
+      scrollTopBtn.style.display = window.scrollY > 400 ? 'flex' : 'none';
     });
 
     scrollTopBtn.addEventListener('click', () => {
