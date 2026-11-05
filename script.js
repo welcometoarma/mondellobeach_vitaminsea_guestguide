@@ -1,41 +1,51 @@
 document.addEventListener('DOMContentLoaded', function () {
   
-  // --- 1. MOBILE MENU (Robust Mobile-First Logic) ---
+  // --- 1. MOBILE MENU (Bulletproof Mobile Fix) ---
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
 
-  function toggleMenu(forceClose = false) {
-    if (!navLinks || !hamburger) return;
-
-    if (forceClose) {
-      navLinks.classList.remove('open');
-      hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-      return;
+  function closeMenu() {
+    if (navLinks) navLinks.classList.remove('open');
+    if (hamburger) {
+      const icon = hamburger.querySelector('i');
+      if (icon) {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
     }
-
-    const isOpen = navLinks.classList.toggle('open');
-    hamburger.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
   }
 
   if (hamburger && navLinks) {
-    // Toggle on hamburger click
-    hamburger.addEventListener('click', function(e) {
+    // Open/Close when clicking the hamburger button
+    hamburger.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      toggleMenu();
-    });
-
-    // Close IMMEDIATELY when any link is tapped
-    navLinks.addEventListener('click', function(e) {
-      if (e.target.closest('a')) {
-        toggleMenu(true);
+      
+      if (navLinks.classList.contains('open')) {
+        closeMenu();
+      } else {
+        navLinks.classList.add('open');
+        const icon = hamburger.querySelector('i');
+        if (icon) {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        }
       }
     });
 
-    // Close if user taps anywhere outside the menu
-    document.addEventListener('click', function(e) {
+    // Attach an event listener DIRECTLY to every single navigation link
+    // This bypasses any mobile Safari/Chrome click-event bugs
+    const allLinks = document.querySelectorAll('.nav-link');
+    allLinks.forEach(function(link) {
+      link.addEventListener('click', function() {
+        closeMenu(); // Instantly close the menu when a link is tapped
+      });
+    });
+
+    // Close menu when tapping anywhere outside the navigation area
+    document.addEventListener('click', function (e) {
       if (navLinks.classList.contains('open') && !e.target.closest('.sticky-nav')) {
-        toggleMenu(true);
+        closeMenu();
       }
     });
   }
