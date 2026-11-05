@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
+  
   // --- 1. MOBILE MENU LOGIC ---
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
-  const allLinks = document.querySelectorAll('.nav-link');
 
+  // Function to close the menu
   function closeMenu() {
     if (navLinks) navLinks.classList.remove('open');
     if (hamburger) {
@@ -16,13 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if (hamburger && navLinks) {
-    // Toggle menu when clicking hamburger
+    // Open/Close when clicking the hamburger
     hamburger.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
       
-      const isOpen = navLinks.classList.contains('open');
-      if (isOpen) {
+      if (navLinks.classList.contains('open')) {
         closeMenu();
       } else {
         navLinks.classList.add('open');
@@ -34,15 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Close menu IMMEDIATELY when ANY link is clicked
-    allLinks.forEach(function (link) {
-      link.addEventListener('click', closeMenu);
-    });
-
-    // Close menu when clicking anywhere outside the navbar
+    // GLOBAL FIX: Close menu whenever ANY link inside the menu is clicked
     document.addEventListener('click', function (e) {
-      if (navLinks.classList.contains('open') && !e.target.closest('.sticky-nav')) {
-        closeMenu();
+      // If the clicked element is a nav-link or inside one
+      const clickedLink = e.target.closest('.nav-link');
+      
+      if (clickedLink && navLinks.classList.contains('open')) {
+        closeMenu(); // Force close it
       }
     });
   }
