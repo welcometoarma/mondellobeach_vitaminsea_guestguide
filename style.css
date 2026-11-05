@@ -234,29 +234,32 @@ body {
 
   .hamburger {
     order: 3;
-    display: inline-flex;
+    display: inline-flex !important;
     flex: 0 0 auto;
+    z-index: 1002;
   }
 
+  /* FORCE THE MENU TO HIDE BY DEFAULT ON MOBILE */
   .nav-links {
     order: 4;
     flex: 0 0 100%;
     width: 100%;
-    display: none;
+    display: none !important; 
     flex-direction: column;
     gap: 0.35rem;
     margin-top: 0.55rem;
     padding-top: 0.8rem;
     border-top: 1px solid var(--border-light);
-    max-height: calc(100vh - 110px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    z-index: 1001;
   }
 
+  /* FORCE THE MENU TO SHOW WHEN OPEN */
   .nav-links.open {
-    display: flex;
-    animation: navReveal 0.22s ease both;
+    display: flex !important; 
   }
 
   .nav-links .nav-link {
@@ -267,13 +270,20 @@ body {
     border-radius: 14px;
   }
 
+  /* FIX: Stop the text spans from breaking the layout */
+  .nav-link .lang-content.active {
+    display: inline !important; 
+  }
+
   .nav-links .nav-link:hover,
   .nav-links .nav-link:active {
     transform: none;
+    background: var(--accent-sea-light);
   }
 
+  /* Ensure scrolling stops exactly under the sticky nav */
   .chapter-card {
-    scroll-margin-top: 90px;
+    scroll-margin-top: 90px !important; 
   }
 }
 
